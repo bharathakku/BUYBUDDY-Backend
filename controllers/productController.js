@@ -34,11 +34,27 @@ const createProduct = async (req, res) => {
 // getAllProducts
 const getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find({});
+    const category = req.query.category;
+
+    const filter = category ? { category } : {};
+
+    const products = await Product.find(filter);
     res.json(products);
   } catch (error) {
     console.error('Error fetching products:', error);
     res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
+// getCategories
+const getCategories = async (req, res) => {
+  try {
+    const categories = await Product.distinct('category');
+    res.json(categories);
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    res.status(500).json({ message: 'Failed to fetch categories' });
   }
 };
 
@@ -102,9 +118,10 @@ const deleteProduct = async (req, res) => {
 
 
 module.exports = {
-  createProduct,
   getAllProducts,
   getProductById,
+  createProduct,
   updateProduct,
   deleteProduct,
+  getCategories,
 };
